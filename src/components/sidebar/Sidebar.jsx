@@ -91,7 +91,7 @@ export default function Sidebar() {
               alt="thumbnail"
             />
             <span className="ml-3 text-sm  hidden lg:inline-block text-black dark:text-white">
-              {currentUser}
+              {currentUser ? currentUser : "profile"}
             </span>
           </div>
         </Link>
