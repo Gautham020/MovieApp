@@ -12,7 +12,7 @@ import Header from "./components/header/Header";
 import Login from "./pages/Login";
 
 function App() {
-  const isLoggedIn = !!localStorage.getItem("currentUser");
+  const isLoggedIn = localStorage.getItem("currentUser");
 
   return (
     <Router>
