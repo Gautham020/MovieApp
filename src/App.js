@@ -19,52 +19,46 @@ function App() {
       <Routes>
         <Route path="/login" element={<Login />} />
 
-        {isLoggedIn ? (
-          <>
-            <Route
-              path="/"
-              element={
-                <div className="flex h-screen">
-                  <div className="w-64  h-full">
-                    <Sidebar />
-                  </div>
+        <Route
+          path="/"
+          element={
+            <div className="flex h-screen">
+              <div className="w-64  h-full">
+                <Sidebar />
+              </div>
 
-                  <div className="flex-grow ">
-                    <div className="fixed w-full ml-64">
-                      <Header />
-                    </div>
-
-                    <div className="p-4 mt-16 overflow-y-auto">
-                      <Home />
-                    </div>
-                  </div>
+              <div className="flex-grow ">
+                <div className="fixed w-full ml-64">
+                  <Header />
                 </div>
-              }
-            />
-            <Route
-              path="/watchlists"
-              element={
-                <div className="flex h-screen">
-                  <div className="w-64 p-3 h-full">
-                    <Sidebar />
-                  </div>
 
-                  <div className="flex-grow ">
-                    <div className="fixed w-full ml-64">
-                      <Header />
-                    </div>
-
-                    <div className="p-4 mt-16 overflow-y-auto">
-                      <WatchList />
-                    </div>
-                  </div>
+                <div className="p-4 mt-16 overflow-y-auto">
+                  <Home />
                 </div>
-              }
-            />
-          </>
-        ) : (
-          <Route path="*" element={<Navigate to="/login" />} />
-        )}
+              </div>
+            </div>
+          }
+        />
+        <Route
+          path="/watchlists"
+          element={
+            <div className="flex h-screen">
+              <div className="w-64 p-3 h-full">
+                <Sidebar />
+              </div>
+
+              <div className="flex-grow ">
+                <div className="fixed w-full ml-64">
+                  <Header />
+                </div>
+
+                <div className="p-4 mt-16 overflow-y-auto">
+                  <WatchList />
+                </div>
+              </div>
+            </div>
+          }
+        />
       </Routes>
     </Router>
   );
