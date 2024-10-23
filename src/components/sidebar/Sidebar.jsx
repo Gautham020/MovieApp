@@ -90,7 +90,7 @@ export default function Sidebar() {
               src={currentUser ? person : personicon}
               alt="thumbnail"
             />
-            <span className="ml-3 hidden lg:inline-block text-black dark:text-white">
+            <span className="ml-3 text-sm  hidden lg:inline-block text-black dark:text-white">
               {currentUser}
             </span>
           </div>
