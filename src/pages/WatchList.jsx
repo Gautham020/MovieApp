@@ -51,7 +51,7 @@ export default function MovieLists() {
     setLoading(true);
     try {
       const response = await axios.get(
-        `http://www.omdbapi.com/?apikey=33167b82&s=${query}`
+        `https://www.omdbapi.com/?apikey=33167b82&s=${query}`
       );
       if (response.data.Response === "True") {
         setList(response.data.Search);
