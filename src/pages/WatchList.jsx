@@ -3,6 +3,7 @@ import axios from "axios";
 import saved from "../images/bookmark.png";
 import check from "../images/check.png";
 import edit from "../images/edit.png";
+import Swal from "sweetalert2";
 
 export default function MovieLists() {
   const [list, setList] = useState([]);
@@ -26,16 +27,38 @@ export default function MovieLists() {
   };
 
   const handleWatchlistToggle = (movie) => {
-    let updatedWatchlist;
-    if (watchlist.includes(movie.imdbID)) {
-      updatedWatchlist = watchlist.filter((id) => id !== movie.imdbID);
-    } else {
-      updatedWatchlist = [...watchlist, movie.imdbID];
-    }
-
-    setWatchlist(updatedWatchlist);
-    saveWatchlist(updatedWatchlist);
+    const action = watchlist.includes(movie.imdbID) ? "remove" : "add";
+    const actionText = action === "remove" ? "Remove from" : "Add to";
+    
+    Swal.fire({
+      title: `${actionText} Watchlist?`,
+      text: `Are you sure you want to ${action} "${movie.Title}" from your watchlist?`,
+      icon: "question",
+      showCancelButton: true,
+      confirmButtonText: "Yes",
+      cancelButtonText: "No",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        let updatedWatchlist;
+        if (watchlist.includes(movie.imdbID)) {
+          updatedWatchlist = watchlist.filter((id) => id !== movie.imdbID);
+        } else {
+          updatedWatchlist = [...watchlist, movie.imdbID];
+        }
+  
+        setWatchlist(updatedWatchlist);
+        saveWatchlist(updatedWatchlist);
+  
+        Swal.fire({
+          icon: "success",
+          title: `${movie.Title} has been ${action === "remove" ? "removed from" : "added to"} your watchlist.`,
+          showConfirmButton: false,
+          timer: 1500,
+        });
+      }
+    });
   };
+  
 
   useEffect(() => {
     const storedWatchlist =
@@ -82,10 +105,23 @@ export default function MovieLists() {
   };
 
   const handleEditWatchlistName = () => {
-    const newName = prompt("Enter new watchlist name:", watchlistName);
-    if (newName) {
-      saveWatchlistName(newName);
-    }
+    Swal.fire({
+      title: "Enter new watchlist name:",
+      input: "text",
+      inputValue: watchlistName,
+      showCancelButton: true,
+      confirmButtonText: "Save",
+      cancelButtonText: "Cancel",
+      inputValidator: (value) => {
+        if (!value) {
+          return "Please enter a name!";
+        }
+      },
+    }).then((result) => {
+      if (result.isConfirmed && result.value) {
+        saveWatchlistName(result.value);
+      }
+    });
   };
 
   if (loading) {
