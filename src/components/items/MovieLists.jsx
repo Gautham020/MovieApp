@@ -55,7 +55,7 @@ export default function MovieLists() {
   };
 
   useEffect(() => {
-    fetchMovies("superman");
+    fetchMovies("movie");
   }, []);
 
   const handleSearch = () => {
