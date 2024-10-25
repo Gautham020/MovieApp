@@ -26,39 +26,39 @@ export default function MovieLists() {
     setWatchlistName(name);
   };
 
-  const handleWatchlistToggle = (movie) => {
-    const action = watchlist.includes(movie.imdbID) ? "remove" : "add";
-    const actionText = action === "remove" ? "Remove from" : "Add to";
-    
-    Swal.fire({
-      title: `${actionText} Watchlist?`,
-      text: `Are you sure you want to ${action} "${movie.Title}" from your watchlist?`,
-      icon: "question",
-      showCancelButton: true,
-      confirmButtonText: "Yes",
-      cancelButtonText: "No",
-    }).then((result) => {
-      if (result.isConfirmed) {
-        let updatedWatchlist;
-        if (watchlist.includes(movie.imdbID)) {
-          updatedWatchlist = watchlist.filter((id) => id !== movie.imdbID);
-        } else {
-          updatedWatchlist = [...watchlist, movie.imdbID];
-        }
+const handleWatchlistToggle = (movie) => {
+  const action = watchlist.includes(movie.imdbID) ? "remove" : "add";
+  const actionText = action === "remove" ? "Remove from" : "Add to";
   
-        setWatchlist(updatedWatchlist);
-        saveWatchlist(updatedWatchlist);
-  
-        Swal.fire({
-          icon: "success",
-          title: `${movie.Title} has been ${action === "remove" ? "removed from" : "added to"} your watchlist.`,
-          showConfirmButton: false,
-          timer: 1500,
-        });
+  Swal.fire({
+    title: `${actionText} Watchlist?`,
+    text: `Are you sure you want to ${action} "${movie.Title}" from your watchlist?`,
+    icon: "question",
+    showCancelButton: true,
+    confirmButtonText: "Yes",
+    cancelButtonText: "No",
+  }).then((result) => {
+    if (result.isConfirmed) {
+      let updatedWatchlist;
+      if (watchlist.includes(movie.imdbID)) {
+        updatedWatchlist = watchlist.filter((id) => id !== movie.imdbID);
+      } else {
+        updatedWatchlist = [...watchlist, movie.imdbID];
       }
-    });
-  };
-  
+
+      setWatchlist(updatedWatchlist);
+      saveWatchlist(updatedWatchlist);
+
+      Swal.fire({
+        icon: "success",
+        title: `${movie.Title} has been ${action === "remove" ? "removed from" : "added to"} your watchlist.`,
+        showConfirmButton: false,
+        timer: 1500,
+      });
+    }
+  });
+};
+
 
   useEffect(() => {
     const storedWatchlist =
