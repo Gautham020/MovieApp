@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Swal from "sweetalert2";
+import { useNavigate } from "react-router-dom";
 import saved from "../../images/bookmark.png";
 
 export default function MovieLists() {
@@ -8,35 +9,38 @@ export default function MovieLists() {
   const [loading, setLoading] = useState(true);
   const [watchlist, setWatchlist] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
-
+  const navigate = useNavigate();
+  
   const userEmail = localStorage.getItem("currentUser");
 
   const saveWatchlist = (newWatchlist) => {
-    localStorage.setItem(
-      `watchlist_${userEmail}`,
-      JSON.stringify(newWatchlist)
-    );
+    localStorage.setItem(`watchlist_${userEmail}`, JSON.stringify(newWatchlist));
   };
 
   const handleWatchlistToggle = (movie) => {
-    // Check if the movie is already in the watchlist
+    if (!userEmail) {
+      Swal.fire({
+        icon: "warning",
+        title: "Login Required",
+        text: "Please log in to add movies to your watchlist.",
+        confirmButtonText: "Login",
+      }).then(() => {
+        navigate("/login");
+      });
+      return;
+    }
+
     const isMovieInWatchlist = watchlist.includes(movie.imdbID);
 
-    // Show SweetAlert confirmation
     Swal.fire({
-      title: isMovieInWatchlist
-        ? "Remove from watchlist?"
-        : "Add to watchlist?",
-      text: `Do you want to ${isMovieInWatchlist ? "remove" : "add"} "${
-        movie.Title
-      }" to your watchlist?`,
+      title: isMovieInWatchlist ? "Remove from watchlist?" : "Add to watchlist?",
+      text: `Do you want to ${isMovieInWatchlist ? "remove" : "add"} "${movie.Title}" to your watchlist?`,
       icon: "question",
       showCancelButton: true,
       confirmButtonText: "Yes",
       cancelButtonText: "No",
     }).then((result) => {
       if (result.isConfirmed) {
-        // Update the watchlist if confirmed
         let updatedWatchlist;
         if (isMovieInWatchlist) {
           updatedWatchlist = watchlist.filter((id) => id !== movie.imdbID);
@@ -47,12 +51,9 @@ export default function MovieLists() {
         setWatchlist(updatedWatchlist);
         saveWatchlist(updatedWatchlist);
 
-        // Display success message
         Swal.fire({
           title: isMovieInWatchlist ? "Removed!" : "Added!",
-          text: `${movie.Title} has been ${
-            isMovieInWatchlist ? "removed from" : "added to"
-          } your watchlist.`,
+          text: `${movie.Title} has been ${isMovieInWatchlist ? "removed from" : "added to"} your watchlist.`,
           icon: "success",
           timer: 1500,
           showConfirmButton: false,
@@ -62,17 +63,14 @@ export default function MovieLists() {
   };
 
   useEffect(() => {
-    const storedWatchlist =
-      JSON.parse(localStorage.getItem(`watchlist_${userEmail}`)) || [];
+    const storedWatchlist = JSON.parse(localStorage.getItem(`watchlist_${userEmail}`)) || [];
     setWatchlist(storedWatchlist);
   }, [userEmail]);
 
   const fetchMovies = async (query) => {
     setLoading(true);
     try {
-      const response = await axios.get(
-        `https://www.omdbapi.com/?apikey=33167b82&s=${query}`
-      );
+      const response = await axios.get(`https://www.omdbapi.com/?apikey=33167b82&s=${query}`);
       if (response.data.Response === "True") {
         setList(response.data.Search);
       } else {
@@ -104,6 +102,7 @@ export default function MovieLists() {
   if (loading) {
     return <p>Loading...</p>;
   }
+
 
   return (
     <div className="flex flex-col mx-4 ">
