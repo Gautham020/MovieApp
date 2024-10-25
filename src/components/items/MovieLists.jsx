@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import Swal from "sweetalert2";
 import saved from "../../images/bookmark.png";
 
 export default function MovieLists() {
@@ -18,16 +19,46 @@ export default function MovieLists() {
   };
 
   const handleWatchlistToggle = (movie) => {
-    let updatedWatchlist;
+    // Check if the movie is already in the watchlist
+    const isMovieInWatchlist = watchlist.includes(movie.imdbID);
 
-    if (watchlist.includes(movie.imdbID)) {
-      updatedWatchlist = watchlist.filter((id) => id !== movie.imdbID);
-    } else {
-      updatedWatchlist = [...watchlist, movie.imdbID];
-    }
+    // Show SweetAlert confirmation
+    Swal.fire({
+      title: isMovieInWatchlist
+        ? "Remove from watchlist?"
+        : "Add to watchlist?",
+      text: `Do you want to ${isMovieInWatchlist ? "remove" : "add"} "${
+        movie.Title
+      }" to your watchlist?`,
+      icon: "question",
+      showCancelButton: true,
+      confirmButtonText: "Yes",
+      cancelButtonText: "No",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // Update the watchlist if confirmed
+        let updatedWatchlist;
+        if (isMovieInWatchlist) {
+          updatedWatchlist = watchlist.filter((id) => id !== movie.imdbID);
+        } else {
+          updatedWatchlist = [...watchlist, movie.imdbID];
+        }
 
-    setWatchlist(updatedWatchlist);
-    saveWatchlist(updatedWatchlist);
+        setWatchlist(updatedWatchlist);
+        saveWatchlist(updatedWatchlist);
+
+        // Display success message
+        Swal.fire({
+          title: isMovieInWatchlist ? "Removed!" : "Added!",
+          text: `${movie.Title} has been ${
+            isMovieInWatchlist ? "removed from" : "added to"
+          } your watchlist.`,
+          icon: "success",
+          timer: 1500,
+          showConfirmButton: false,
+        });
+      }
+    });
   };
 
   useEffect(() => {
